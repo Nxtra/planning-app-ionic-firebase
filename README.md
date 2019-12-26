@@ -13,3 +13,7 @@
 * creating a tabs page: [https://ionicframework.com/docs/api/tabs](https://ionicframework.com/docs/api/tabs)
 * The UI component that we use for authentication is the firebaseUI angular: `$ npm install firebase firebaseui @angular/fire firebaseui-angular --save`
 
+## cordova
+* install cordova: `npm install -g cordova`
+* add the platform for which you want to build: `ionic cordova platform add ios`
+* build for platform: `ionic cordova build <platform> [options]`
