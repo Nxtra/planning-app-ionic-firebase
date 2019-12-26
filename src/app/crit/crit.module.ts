@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { CritPageRoutingModule } from './crit-routing.module';
 
 import { CritPage } from './crit.page';
+import {ComponentsModule} from "../components/components.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CritPageRoutingModule
+    CritPageRoutingModule,
+    ComponentsModule
   ],
   declarations: [CritPage]
 })

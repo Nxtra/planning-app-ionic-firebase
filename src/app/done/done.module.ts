@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { DonePageRoutingModule } from './done-routing.module';
 
 import { DonePage } from './done.page';
+import {ComponentsModule} from "../components/components.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    DonePageRoutingModule
+    DonePageRoutingModule,
+    ComponentsModule
   ],
   declarations: [DonePage]
 })

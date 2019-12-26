@@ -15,26 +15,28 @@ import {AppRoutingModule} from './app-routing.module';
 import {environment} from '../environments/environment';
 import {LoginPageModule} from './login/login.module';
 import {TabsPageModule} from './tabs/tabs.module';
+import {ComponentsModule} from "./components/components.module";
 
 
 @NgModule({
-    declarations: [AppComponent],
-    entryComponents: [],
-    imports: [BrowserModule,
-        AngularFireModule.initializeApp(environment.firebase),
-        AngularFirestoreModule,
-        AngularFireAuthModule,
-        IonicModule.forRoot(),
-        AppRoutingModule,
-        LoginPageModule,
-        TabsPageModule,
-    ],
-    providers: [
-        StatusBar,
-        SplashScreen,
-        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
-    ],
-    bootstrap: [AppComponent]
+  declarations: [AppComponent],
+  entryComponents: [],
+  imports: [BrowserModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AngularFireAuthModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,
+    LoginPageModule,
+    TabsPageModule,
+    ComponentsModule,
+  ],
+  providers: [
+    StatusBar,
+    SplashScreen,
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }
