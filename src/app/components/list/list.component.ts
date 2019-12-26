@@ -80,7 +80,13 @@ export class ListComponent implements OnInit {
         }
       ]
     });
-    await alert.present();
+
+    await alert.present().then(()=>{
+      let input: any = document.querySelector('ion-alert input');
+      input.focus();
+      return;
+    });
+
     alert.addEventListener('keydown', val => {
       if(val.keyCode === 13){
         this.handleAddItem(val.srcElement['value'])
