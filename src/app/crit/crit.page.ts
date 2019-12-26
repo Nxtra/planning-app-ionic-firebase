@@ -25,12 +25,15 @@ export class CritPage implements OnInit {
   ngOnInit() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/crit`).snapshotChanges().subscribe(data => {
-          this.items = [];
-          data.forEach((item: any) => {
-            this.items.push(item.payload.doc.data());
+        this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/crit`, ref => ref.orderBy('pos', 'desc'))
+          .snapshotChanges().subscribe(data => {
+            this.items = [];
+            data.forEach((item: any) => {
+              let data = item.payload.doc.data();
+              data.id = item.payload.doc.id;
+              this.items.push(data);
+            });
           });
-        });
       } else {
         return;
       }
@@ -73,5 +76,32 @@ export class CritPage implements OnInit {
       ]
     });
     return await alert.present();
+  }
+
+  delete(item) {
+    this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/crit/${item.id}`).delete();
+  }
+
+  complete(item) {
+    this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/crit/${item.id}`).delete();
+    let id: number = item.id;
+    delete item.id;
+    this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/done`, ref => ref.orderBy('pos', 'desc').limit(1))
+      .get().toPromise().then(qResponse => {
+        item.pos = 0;
+        qResponse.forEach(i => {
+          item.pos = i.data().pos + 1;
+        })
+        this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/done/${id}`).set(item);
+    })
+  }
+
+  later(item) {
+    // this.moveItem(item, 'later');
+  }
+
+
+  log(item: { pos: number; created: Date; text: string }) {
+    console.log(item);
   }
 }
