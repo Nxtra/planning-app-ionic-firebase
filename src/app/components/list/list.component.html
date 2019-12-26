@@ -1,7 +1,9 @@
   <ion-toolbar>
     <ion-title>{{title}} <span *ngIf="!loading">({{items.length}})</span></ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="add()"><ion-icon name="add"></ion-icon></ion-button>
+      <ion-button shape="round" color="primary" (click)="add()">
+          <ion-icon name="add-circle"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 

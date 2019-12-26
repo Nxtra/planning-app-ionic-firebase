@@ -3,6 +3,8 @@ import {AngularFireAuth} from "@angular/fire/auth";
 import {AngularFirestore} from "@angular/fire/firestore";
 import {AlertController} from "@ionic/angular";
 
+const MAX_LIST_SIZE = 100;
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -33,7 +35,10 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/${this.list}`, ref => ref.orderBy('pos', 'desc'))
+        this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/${this.list}`, ref => {
+          let query = ref.orderBy('pos', 'desc').limit(MAX_LIST_SIZE);
+          return query;
+        })
           .snapshotChanges().subscribe(data => {
           this.items = [];
           data.forEach((item: any) => {
@@ -63,16 +68,7 @@ export class ListComponent implements OnInit {
         },
         {
           text: 'Ok',
-          handler: (val) => {
-            const now = new Date();
-            const nowUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
-              now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()));
-
-            this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/${this.list}`).add({
-              text: val.task,
-              pos: this.items.length ? this.items[0].pos + 1 : 0,
-              created: nowUtc,
-            });
+          handler: (val) => { this.handleAddItem(val.task)
           }
         },
       ],
@@ -84,7 +80,38 @@ export class ListComponent implements OnInit {
         }
       ]
     });
-    return await alert.present();
+    await alert.present();
+    alert.addEventListener('keydown', val => {
+      if(val.keyCode === 13){
+        this.handleAddItem(val.srcElement['value'])
+        alert.dismiss();
+      }
+    })
+  }
+
+  handleAddItem(text: string) {
+    if (!text.trim().length)
+      return;
+
+    let now = new Date();
+    let nowUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
+      now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()));
+
+    this.db.collection(`users/${this.afAuth.auth.currentUser.uid}/${this.list}`).add({
+      text,
+      pos: this.items.length ? this.items[0].pos + 1 : 0,
+      created: nowUtc,
+    });
+
+    if (this.items.length >= MAX_LIST_SIZE)
+      this.alertController.create({
+        header: 'Critical Oveload',
+        subHeader: 'Too many important items!',
+        message: `You have over ${MAX_LIST_SIZE} items in this list, only showing the top ${MAX_LIST_SIZE}.`,
+        buttons: ['Okay'],
+      }).then(warning => {
+        warning.present();
+      });
   }
 
   delete(item) {
@@ -107,7 +134,7 @@ export class ListComponent implements OnInit {
   }
 
 
-  moveItem(item, list){
+  moveItem(item, list) {
     this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/${this.list}/${item.id}`).delete();
     let id: number = item.id;
     delete item.id;
