@@ -167,6 +167,10 @@ export class ListComponent implements OnInit {
     })
   }
 
+  moveItemUpOrDown(item, index:number, offset: number) {
+    this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/${this.list}/${item.id}`).set({pos: item.pos + offset}, {merge: true});
+    this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/${this.list}/${this.items[index - offset].id}`).set({pos: item.pos - offset}, {merge: true});
+  }
 
   log(item) {
     console.log(item);
