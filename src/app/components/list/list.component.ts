@@ -55,9 +55,17 @@ export class ListComponent implements OnInit {
     });
   }
 
-  async add() {
+  async add(){
+    this.addOrEdit('Add Item', val => { this.handleAddItemOk(val.task)})
+  }
+
+  async edit(item){
+    this.addOrEdit('Edit Item', val => {this.handleEditItemOk(val.task, item)}, item)
+  }
+
+  async addOrEdit(header: string, okHandler, item?) {
     const alert = await this.alertController.create({
-      header: 'New Task',
+      header: header,
       buttons: [
         {
           text: 'Cancel',
@@ -68,15 +76,15 @@ export class ListComponent implements OnInit {
         },
         {
           text: 'Ok',
-          handler: (val) => { this.handleAddItem(val.task)
-          }
+          handler: okHandler
         },
       ],
       inputs: [
         {
           name: 'task',
           type: 'text',
-          placeholder: 'New Task',
+          value: item? item.text: '',
+          placeholder: 'Task to do',
         }
       ]
     });
@@ -89,15 +97,16 @@ export class ListComponent implements OnInit {
 
     alert.addEventListener('keydown', val => {
       if(val.keyCode === 13){
-        this.handleAddItem(val.srcElement['value'])
+        this.handleAddItemOk(val.srcElement['value'])
         alert.dismiss();
       }
     })
   }
 
-  handleAddItem(text: string) {
-    if (!text.trim().length)
+  handleAddItemOk(text: string) {
+    if (!text.trim().length){
       return;
+    }
 
     let now = new Date();
     let nowUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
@@ -118,6 +127,10 @@ export class ListComponent implements OnInit {
       }).then(warning => {
         warning.present();
       });
+  }
+
+  handleEditItemOk(text: string, item){
+    this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/${this.list}/${item.id}`).set({text: text}, {merge: true});
   }
 
   delete(item) {
