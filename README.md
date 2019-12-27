@@ -6,9 +6,11 @@
 * you have to enable storage for this project
 * also add to `app.module.ts`
 * if you use authentication declare it in `app.component.ts` and subscribe to it
+* build and deploy: `npm run publish:web`
 
 
 ## ionic
+* start project `ionic start`
 * generate page: `ionic g page pageName`
 * creating a tabs page: [https://ionicframework.com/docs/api/tabs](https://ionicframework.com/docs/api/tabs)
 * The UI component that we use for authentication is the firebaseUI angular: `$ npm install firebase firebaseui @angular/fire firebaseui-angular --save`

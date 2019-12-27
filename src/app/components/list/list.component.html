@@ -41,3 +41,10 @@
     </ion-item-sliding>
 </ion-list>
 
+<ion-footer *ngIf="this.items.length !== 0">
+    <ion-list style="text-align:center">
+        <ion-button shape="round" color="primary" (click)="removeAll()">
+            <ion-icon name="trash"></ion-icon>
+        </ion-button>
+    </ion-list>
+</ion-footer>

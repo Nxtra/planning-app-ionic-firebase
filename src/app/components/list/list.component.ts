@@ -124,6 +124,7 @@ export class ListComponent implements OnInit {
         subHeader: 'Too many important items!',
         message: `You have over ${MAX_LIST_SIZE} items in this list, only showing the top ${MAX_LIST_SIZE}.`,
         buttons: ['Okay'],
+        cssClass: 'foo',
       }).then(warning => {
         warning.present();
       });
@@ -153,6 +154,11 @@ export class ListComponent implements OnInit {
   }
 
 
+  removeAll() {
+    console.log(`removing all`);
+     this.items.forEach(item => this.delete(item));
+  }
+
   moveItem(item, list) {
     this.db.doc(`users/${this.afAuth.auth.currentUser.uid}/${this.list}/${item.id}`).delete();
     let id: number = item.id;
@@ -175,4 +181,5 @@ export class ListComponent implements OnInit {
   log(item) {
     console.log(item);
   }
+
 }
